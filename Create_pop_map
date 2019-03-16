@@ -1,6 +1,8 @@
 # Create a population map for Stacks population 
+# List files in output of clone_filter
+ls -> sheep_ID.txt 
 
-popmap <- read.table("path_to_text_file_with_sheep_ID")
+popmap <- read.table("path_to_text_file_with_sheep_ID/sheep_ID.txt")
 
 popmap$V1
 paste(popmap$V1, ".1")
