@@ -1,0 +1,13 @@
+# Creating a list of sample IDs for stacks 
+
+# Must be in the directory containing the sequence reads (no other files present)
+ls -> sheeplist.txt
+ls -> wolflist.txt
+
+# Use find and replace to remove file extensions and forward/reverse read numbers in text file
+
+# Remove sample ID duplicates
+sheeplist.txt | uniq -> sheeplist.txt
+wolflist.txt | uniq -> wolflist.txt
+
+
