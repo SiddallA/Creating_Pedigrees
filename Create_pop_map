@@ -1,10 +1,7 @@
 # Create a population map for Stacks population 
 
-setwd("/media/rohan/AlexEH/sheep_out_clone/")
+popmap <- read.table("path_to_text_file_with_sheep_ID")
 
-popmap <- read.table("../sheep_pop_map2.txt")
-View(popmap)
-?grep
 popmap$V1
 paste(popmap$V1, ".1")
 paste(popmap$V1, ".1", sep = "")
