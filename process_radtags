@@ -1,0 +1,14 @@
+# Stacks process_radtags
+for line in $(cat /Users/alex/Desktop/sheeplist.txt); 
+do process_radtags -1 /Volumes/AlexEH/sheep/"$line"_1.fastq.gz -2 /Volumes/AlexEH/sheep/"$line"_2.fastq.gz -o /Volumes/AlexEH/sheep_out/ -e sbfI -c -q ;
+done
+  
+for line in $(cat /Users/alex/Desktop/wolflist.txt); 
+do process_radtags -1 /Volumes/AlexEH/wolf/"$line"_1.fastq.gz -2 /Volumes/AlexEH/wolf/"$line"_2.fastq.gz -o /Volumes/AlexEH/wolf_out/ -e sbfI -c -q ; 
+done
+
+# /Volumes/AlexEH/sheep/ -- path to directory with samples in 
+# -o -- output directory
+# -e -- restriction enzyme used
+# -c -- clean the data
+# -q -- quality control of data
