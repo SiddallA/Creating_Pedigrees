@@ -1,0 +1,3 @@
+# Command to filter out forward reads into sperate directory (have to be in diretory with files in)
+
+mv ./*1.fq.gz ./forward_reads
