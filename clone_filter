@@ -1,0 +1,12 @@
+# Stacks clone_filter
+
+for line in $(cat /Users/alex/Desktop/sheeplist.txt); 
+do clone_filter -1 /Volumes/AlexEH/sheep_out/"$line"_1.1.fq.gz -2 /Volumes/AlexEH/sheep_out/"$line"_2.2.fq.gz -i gzfastq -o /Volumes/AlexEH/sheep_out_clone ;
+done
+
+for line in $(cat /Users/alex/Desktop/wolflist.txt); 
+do clone_filter -1 /Volumes/AlexEH/wolf_out/"$line"_1.1.fq.gz -2 /Volumes/AlexEH/wolf_out/"$line"_2.2.fq.gz -i gzfastq -o /Volumes/AlexEH/wolf_out_clone ; 
+done
+ 
+# /Volumes/AlexEH/sheep_out/ -- path to directory with process_radtags output in  
+# -i -- input file type
