@@ -2,6 +2,8 @@
 # List files in output of clone_filter
 ls -> sheep_ID.txt 
 
+# R script 
+
 popmap <- read.table("path_to_text_file_with_sheep_ID/sheep_ID.txt")
 
 popmap$V1
