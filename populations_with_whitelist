@@ -1,0 +1,8 @@
+# Command for running populations with whitelist
+
+populations -P denovo_out/ -O filteredPopOut/ --popmap ../sheep_popmapFinal.txt --vcf -b 1 -t 8 -m 5 -W plink_stuff/maf0.05.prune.in
+
+-P -- path to denovo_map output
+-O -- output directory
+--popmap -- path to popmap
+-W -- path to whitelist
