@@ -1,0 +1,14 @@
+# Full command for plink filtering to generate whitelist
+
+./plink --vcf ../pop_out/batch_1.vcf --hwe 0.05 'midp' --mind 0.7 --r2 --ld-window-r2 0 --out hwe --allow-extra-chr --indep-pairwise 500 1 0.2
+
+# Extra parameters
+
+--allow-extra-chr
+  --hwe 0.05 midp
+  --indep-pairwise 500 1 0.2
+  --ld-window-r2 0
+  --mind 0.7
+  --out hwe
+  --r2
+  --vcf
