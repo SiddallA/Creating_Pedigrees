@@ -1,0 +1,34 @@
+hwe <- read.table("hwe.ld", header = TRUE)
+hist(hwe$R2)
+
+# Sheep data before filtering
+
+hwe %>% ggplot() + 
+  aes(x = R2) + 
+  geom_histogram(binwidth = 0.01, colour = "black", fill = "white") + 
+  theme_minimal() + labs(x = expression('r'^2)) + labs(y = "Frequency") + 
+  ylim(0, 4000) 
+
+# Sheep data with filtering 
+
+hwe %>% ggplot() + 
+  aes(x = R2) + 
+  geom_histogram(binwidth = 0.01, colour = "black", fill = "white") + 
+  theme_minimal() + labs(x = expression('r'^2)) + labs(y = "Frequency") + 
+  ylim(0, 4000) +
+  xlim(0, 0.2)
+  
+ # Apodemus data without filtering 
+  
+hwe %>% ggplot() + 
+  aes(x = R2) + 
+  geom_histogram(binwidth = 0.01, colour = "black", fill = "white") + 
+  theme_minimal() + labs(x = expression('r'^2)) + labs(y = "Frequency")
+  
+ # Apodemus data with filtering
+ 
+hwe %>% ggplot() + 
+  aes(x = R2) + 
+  geom_histogram(binwidth = 0.01, colour = "black", fill = "white") + 
+  theme_minimal() + labs(x = expression('r'^2)) + labs(y = "Frequency") + 
+  xlim(0, 0.25)
