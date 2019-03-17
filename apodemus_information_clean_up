@@ -1,0 +1,112 @@
+# Extracting candidate mother and father IDs from apodemus information provided 
+
+library(tidyverse)
+Apodemus_data <- read_tsv("Alex_samples_Poland.tsv")
+
+#Select info needed
+
+Apodemus_data %>% select(Sex, Place, Date, `Age (juv - juvenile, sad - sudadultus, ad - adultus)`, `Digestion plate`, X23) -> apofilt
+
+#Group by age
+
+apofilt %>% group_by(`Age (juv - juvenile, sad - sudadultus, ad - adultus)`)
+
+#Order by age
+
+apofilt <- apofilt[order(apofilt$`Age (juv - juvenile, sad - sudadultus, ad - adultus)`),]
+
+#Filter out only adults and sudadultus
+
+apo_no_juv <- apofilt[!grepl("\\juv\\b", apofilt$`Age (juv - juvenile, sad - sudadultus, ad - adultus)`), ]
+
+#Filter out only adults
+
+apo_adults <- apo_no_juv[!grepl("sad", apo_no_juv$`Age (juv - juvenile, sad - sudadultus, ad - adultus)`), ]
+
+#Select only juviniles
+
+apo_juv <- apofilt[grep("juv", apofilt$`Age (juv - juvenile, sad - sudadultus, ad - adultus)`), ]
+
+#Select only sudaldutus
+
+apo_sad <- apofilt[grep("sad", apofilt$`Age (juv - juvenile, sad - sudadultus, ad - adultus)`), ]
+
+#Create column with ID
+
+apo_no_juv$`Digestion plate` <- paste(apo_no_juv$`Digestion plate`,apo_no_juv$X23)
+
+#Select only mothers
+
+apo_no_juv_female <- apo_no_juv[grep("female", apo_no_juv$Sex), ]
+
+#Select the ID of candiates mothers
+
+apo_no_juv_ID_mother <- apo_no_juv_female[, 5]
+
+#Flip data so it can be pasted as a row
+
+apo_no_juv_flipped_mother <- t(apo_no_juv_ID_mother)
+
+#Select only fathers
+
+apo_no_juv_male <- apo_no_juv[grep("\\bmale\\b", apo_no_juv$Sex), ]
+
+#Select candidate father IDs
+
+apo_no_juv_ID_father <- apo_no_juv_male[, 5]
+
+#Flip data so can be pasted as row
+
+apo_no_juv_flipped_father <- t(apo_no_juv_ID_father)
+
+#Create ID on candiate offspring files
+
+apo_adults$`Digestion plate` <- paste(apo_adults$`Digestion plate`,apo_adults$X23)
+
+apo_sad$`Digestion plate` <- paste(apo_sad$`Digestion plate`,apo_sad$X23)
+
+apo_juv$`Digestion plate` <- paste(apo_juv$`Digestion plate`,apo_juv$X23)
+
+#Adults only candidate mothers
+
+apo_adults_female <- apo_adults[grep("female", apo_adults$Sex), ]
+
+apo_adults_ID_mother <- apo_adults_female[, 5]
+
+apo_adults_flipped_mother <- t(apo_adults_ID_mother)
+
+#Adults only candidate fathers
+
+apo_adults_male <- apo_adults[grep("\\bmale\\b", apo_adults$Sex), ]
+
+apo_adults_ID_father <- apo_adults_male[, 5]
+
+apo_adults_flipped_father <- t(apo_adults_ID_father)
+
+#Create only IDs by age
+
+apo_adults_ID <- apo_adults[, 5]
+apo_sad_ID <- apo_sad[, 5]
+apo_juv_ID <- apo_juv[, 5]
+
+#Bind the appropiate age groups to the correct age groups
+
+apo_adults_bound_mother <- cbind(apo_adults_ID, apo_adults_flipped_mother)
+apo_adults_bound_father <- cbind(apo_adults_ID, apo_adults_flipped_father)
+
+apo_juv_bound_mother <- cbind(apo_juv_ID, apo_no_juv_flipped_mother)
+apo_juv_bound_father <- cbind(apo_juv_ID, apo_no_juv_flipped_father)
+
+apo_sad_bound_mother <- cbind(apo_sad_ID, apo_adults_flipped_mother)
+apo_sad_bound_father <- cbind(apo_sad_ID, apo_adults_flipped_father)
+
+#Output the data for cervus
+
+write.csv(apo_adults_bound_mother , file = "apo_adults_bound_mother.csv")
+write.csv(apo_adults_bound_father , file = "apo_adults_bound_father.csv")
+
+write.csv(apo_juv_bound_mother , file = "apo_juv_bound_mother.csv")
+write.csv(apo_juv_bound_father , file = "apo_juv_bound_father.csv")
+
+write.csv(apo_sad_bound_mother, file = "apo_sad_bound_mother.csv")
+write.csv(apo_sad_bound_father, file = "apo_sad_bound_father.csv")
