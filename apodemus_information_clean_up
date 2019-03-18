@@ -1,11 +1,38 @@
-# Extracting candidate mother and father IDs from apodemus information provided 
-
 library(tidyverse)
 Apodemus_data <- read_tsv("Alex_samples_Poland.tsv")
 
+#Get rid of the duplicates
+
+head(Apodemus_data, -4) -> Apodemus_data
+
+#Create ID which matches the ID on sequencing 
+
+Apodemus_data$`Digestion plate` <- paste(Apodemus_data$`Digestion plate`,Apodemus_data$X23)
+
+gsub(" ", "0", Apodemus_data$`Digestion plate`, fixed = TRUE) -> Apodemus_data$ID
+gsub("011", "11", Apodemus_data$ID, fixed = TRUE) -> Apodemus_data$ID
+gsub("012", "12", Apodemus_data$ID, fixed = TRUE) -> Apodemus_data$ID
+gsub("010", "10", Apodemus_data$ID, fixed = TRUE) -> Apodemus_data$ID
+
+
+```
+
+```{r}
 #Select info needed
 
-Apodemus_data %>% select(Sex, Place, Date, `Age (juv - juvenile, sad - sudadultus, ad - adultus)`, `Digestion plate`, X23) -> apofilt
+Apodemus_data %>% select(Sex, Place, Date, `Age (juv - juvenile, sad - sudadultus, ad - adultus)`, ID) -> apofilt
+
+#Candidate fathers only (none age accounted)
+
+can_father_no_age <- apofilt[grep("\\bmale\\b", apofilt$Sex), ]
+can_father_no_age %>% select(Sex, ID) -> can_father_no_age_fil
+write.csv(can_father_no_age_fil, row.names = FALSE, file = "Apo_ID_sex_par_father.csv")
+
+#Candidate fathers only (none age accounted)
+
+can_mother_no_age <- apofilt[grep("\\bfemale\\b", apofilt$Sex), ]
+can_mother_no_age %>% select(Sex, ID) -> can_mother_no_age_fil
+write.csv(can_mother_no_age_fil, row.names = FALSE, file = "Apo_ID_sex_par_mother.csv")
 
 #Group by age
 
@@ -31,10 +58,6 @@ apo_juv <- apofilt[grep("juv", apofilt$`Age (juv - juvenile, sad - sudadultus, a
 
 apo_sad <- apofilt[grep("sad", apofilt$`Age (juv - juvenile, sad - sudadultus, ad - adultus)`), ]
 
-#Create column with ID
-
-apo_no_juv$`Digestion plate` <- paste(apo_no_juv$`Digestion plate`,apo_no_juv$X23)
-
 #Select only mothers
 
 apo_no_juv_female <- apo_no_juv[grep("female", apo_no_juv$Sex), ]
@@ -58,14 +81,6 @@ apo_no_juv_ID_father <- apo_no_juv_male[, 5]
 #Flip data so can be pasted as row
 
 apo_no_juv_flipped_father <- t(apo_no_juv_ID_father)
-
-#Create ID on candiate offspring files
-
-apo_adults$`Digestion plate` <- paste(apo_adults$`Digestion plate`,apo_adults$X23)
-
-apo_sad$`Digestion plate` <- paste(apo_sad$`Digestion plate`,apo_sad$X23)
-
-apo_juv$`Digestion plate` <- paste(apo_juv$`Digestion plate`,apo_juv$X23)
 
 #Adults only candidate mothers
 
@@ -102,11 +117,11 @@ apo_sad_bound_father <- cbind(apo_sad_ID, apo_adults_flipped_father)
 
 #Output the data for cervus
 
-write.csv(apo_adults_bound_mother , file = "apo_adults_bound_mother.csv")
-write.csv(apo_adults_bound_father , file = "apo_adults_bound_father.csv")
+write.csv(apo_adults_bound_mother, row.names = FALSE , file = "apo_adults_bound_mother.csv")
+write.csv(apo_adults_bound_father,row.names = FALSE , file = "apo_adults_bound_father.csv")
 
-write.csv(apo_juv_bound_mother , file = "apo_juv_bound_mother.csv")
-write.csv(apo_juv_bound_father , file = "apo_juv_bound_father.csv")
+write.csv(apo_juv_bound_mother, row.names = FALSE , file = "apo_juv_bound_mother.csv")
+write.csv(apo_juv_bound_father, row.names = FALSE , file = "apo_juv_bound_father.csv")
 
-write.csv(apo_sad_bound_mother, file = "apo_sad_bound_mother.csv")
-write.csv(apo_sad_bound_father, file = "apo_sad_bound_father.csv")
+write.csv(apo_sad_bound_mother, row.names = FALSE, file = "apo_sad_bound_mother.csv")
+write.csv(apo_sad_bound_father, row.names = FALSE,  file = "apo_sad_bound_father.csv")
