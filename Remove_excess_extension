@@ -1,1 +1,4 @@
 # Command to remove excess extension numbers on all files 
+
+rename _1\.1\.1 \.1 *fq.gz
+rename _2\.2\.2 \.2 *fq.gz
