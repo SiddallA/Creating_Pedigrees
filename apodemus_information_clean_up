@@ -22,6 +22,11 @@ gsub("010", "10", Apodemus_data$ID, fixed = TRUE) -> Apodemus_data$ID
 
 Apodemus_data %>% select(Sex, Place, Date, `Age (juv - juvenile, sad - sudadultus, ad - adultus)`, ID) -> apofilt
 
+#Candidate offspring ID
+
+apofilt %>% select(Sex, ID) -> offspring
+write.csv(can_father_no_age_fil, row.names = FALSE, file = "Apo_ID_sex_off.csv")
+
 #Candidate fathers only (none age accounted)
 
 can_father_no_age <- apofilt[grep("\\bmale\\b", apofilt$Sex), ]
