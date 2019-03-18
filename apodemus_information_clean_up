@@ -125,3 +125,5 @@ write.csv(apo_juv_bound_father, row.names = FALSE , file = "apo_juv_bound_father
 
 write.csv(apo_sad_bound_mother, row.names = FALSE, file = "apo_sad_bound_mother.csv")
 write.csv(apo_sad_bound_father, row.names = FALSE,  file = "apo_sad_bound_father.csv")
+
+# Outputted file were merged in excel to create a single candidate mother and single candidate father file
