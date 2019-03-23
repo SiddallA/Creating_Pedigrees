@@ -1,0 +1,26 @@
+# Read in SRA run table
+
+sheepinfo <- read_tsv("./Andrewssupportinginfo/SraRunTable.txt")
+
+# Filter out needed columns
+
+sheepinfo %>% select(Library_Name, Run) -> sheepinfofilt
+
+# Read in Andrews et al. (2018) offspring information file
+
+candidateID <- read_csv("./Andrewssupportinginfo/men12910-sup-0006-tables6.csv")
+
+# Add ".1" to the end of all run IDs as this is current name in populations output
+
+ sheepinfofilt$Run <- paste(sheepinfofilt$Run,".1")
+ gsub(" ", "", sheepinfofilt$Run, fixed = TRUE) -> sheepinfofilt$Run
+
+# Loop to rename IDs in canidate ID file with ID from SRA run number
+ 
+for (i in sheepinfofilt$Library_Name) {
+    candidateID[which(candidateID == i, arr.ind = TRUE)] <- unlist(sheepinfofilt[sheepinfofilt$Library_Name == i,2])
+}
+
+# Output ID file 
+ 
+write.csv(candidateID, "sheep_candidateID_with_mother.csv")
