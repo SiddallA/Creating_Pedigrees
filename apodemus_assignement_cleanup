@@ -1,0 +1,57 @@
+install.packages("kinship2")
+library(kinship2)
+
+library(tidyverse)
+Apodemus_data <- read_tsv("Alex_samples_Poland.tsv")
+
+#Get rid of the duplicates
+
+head(Apodemus_data, -4) -> Apodemus_data
+
+#Create ID which matches the ID on sequencing 
+
+Apodemus_data$`Digestion plate` <- paste(Apodemus_data$`Digestion plate`,Apodemus_data$X23)
+
+gsub(" ", "0", Apodemus_data$`Digestion plate`, fixed = TRUE) -> Apodemus_data$ID
+gsub("011", "11", Apodemus_data$ID, fixed = TRUE) -> Apodemus_data$ID
+gsub("012", "12", Apodemus_data$ID, fixed = TRUE) -> Apodemus_data$ID
+gsub("010", "10", Apodemus_data$ID, fixed = TRUE) -> Apodemus_data$ID
+
+
+#This only works if you add a blank column at the start of the excel file, there is probably a way to fix this within R but this was quicker
+
+Apo_0.05_Age <- read.csv("./cervus/ApoMAF0.05/Removed_duplicates/PA_0.05_dup_rem.csv", row.names = NULL, sep =",")
+
+#Fiter out the columns which curently are irrelevant 
+
+Apodemus_data %>% select(ID, Specie, Sex, Place, Date, `Age (juv - juvenile, sad - sudadultus, ad - adultus)`, `Longitude (oE)`, `Latitude (oN)`) -> apofilt
+
+Apo_0.05_Age %>% select(Offspring.ID, Candidate.mother.ID, Pair.loci.compared, Pair.loci.mismatching, Pair.LOD.score, Pair.Delta, Candidate.father.ID, Pair.loci.compared.1, Pair.loci.mismatching.1, Pair.LOD.score.1, Pair.Delta.1, Trio.LOD.score, Trio.Delta) -> Apo_0.05_Age_Filt
+
+#Change the ID column names and merge datasets by ID 
+
+colnames(Apo_0.05_Age_Filt)[1] <- "ID"
+ 
+apo0.05_data <- merge(Apo_0.05_Age_Filt, apofilt, by="ID")
+
+#Change sex so male = 1, female = 2
+
+gsub("male", "1", apo0.05_data$Sex, fixed = TRUE) -> apo0.05_data$Sex
+gsub("fe1", "2", apo0.05_data$Sex, fixed = TRUE) -> apo0.05_data$Sex
+
+#Only select assignments which are confident (delta > 0)
+
+apo0.05_data %>% filter(Pair.Delta > 0 | Pair.Delta.1 >0) -> apo0.05_assignments
+
+#Make sex numeric so is recognised by kinship
+
+apo0.05_data$Sex <- as.numeric(apo0.05_data$Sex)
+
+#change the relevant cols to characters instead of factors
+apo0.05_data$Candidate.mother.ID <- as.character(apo0.05_data$Candidate.mother.ID)
+apo0.05_data$Candidate.father.ID <- as.character(apo0.05_data$Candidate.father.ID)
+apo0.05_data$ID <- as.character(apo0.05_data$ID)
+
+# Output data
+
+write.csv(apo0.05_assignments, "apodemus_non_age_accounted_output.csv")
